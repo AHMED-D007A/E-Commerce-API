@@ -8,7 +8,7 @@ import (
 
 var secretKey = []byte("this is a secret")
 
-func CreateToken(claim string) (string, error) {
+func createToken(claim string) (string, error) {
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": claim,
 		"iss": "customer_auth",

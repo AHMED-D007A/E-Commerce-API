@@ -3,10 +3,11 @@ package auth
 import (
 	"time"
 
+	"github.com/AHMED-D007A/E-Commerce-API/internal/config"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var secretKey = []byte("this is a secret")
+var secretKey = config.Envs.JWT_SECRET
 
 func createToken(claim string) (string, error) {
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{

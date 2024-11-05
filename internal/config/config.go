@@ -30,5 +30,6 @@ func InitConfig() Config {
 		DB_USERNAME: os.Getenv("DB_USERNAME"),
 		DB_PASSWORD: os.Getenv("DB_PASSWORD"),
 		DB_NAME:     os.Getenv("DB_NAME"),
+		JWT_SECRET:  []byte(os.Getenv("JWT_SECRET")),
 	}
 }

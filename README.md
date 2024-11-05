@@ -19,7 +19,7 @@
 ```
 POST /register
 {
-  "email": "user1@email"
+  "email": "user1@email",
   "username": "user1",
   "password": "password1"
 }
@@ -27,7 +27,7 @@ POST /register
 ```
 POST /login
 {
-  "email": "user1@email"
+  "email": "user1@email",
   "password": "password1"
 }
 ```

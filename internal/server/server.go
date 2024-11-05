@@ -25,7 +25,7 @@ func (s *APIServer) Start() error {
 	router.Use(LogMW)
 
 	authenRouter := router.PathPrefix("/api/v1").Subrouter()
-	registerAuthenticationRoutes(authenRouter)
+	registerAuthenticationRoutes(authenRouter, s.db)
 
 	fmt.Println("Server is running on port", s.addr)
 	return http.ListenAndServe(s.addr, router)

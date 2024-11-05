@@ -55,5 +55,38 @@ func (h *AuthHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *AuthHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
-	// Implement the logic to login a user
+	var userPayload UserPayload
+	err := json.NewDecoder(r.Body).Decode(&userPayload)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Print(err.Error())
+		log.Println("Error decoding user payload")
+		return
+	}
+	user, err := h.storage.GetUser(userPayload.Email)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Print(err.Error())
+		return
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userPayload.Password))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		log.Print(err.Error())
+		return
+	}
+	token, err := createToken(user.Email)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Print(err.Error())
+		return
+	}
+	response := map[string]string{"token": token}
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Print(err.Error())
+		return
+	}
 }

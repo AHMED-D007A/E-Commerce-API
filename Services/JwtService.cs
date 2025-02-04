@@ -17,7 +17,7 @@ namespace E_Commerce_API.Services
 
         public string GenerateSecurityToken(User user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Configuration["Jwt:Key"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Configuration["JwtConfig:Key"]!));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new[]
             {
@@ -25,8 +25,8 @@ namespace E_Commerce_API.Services
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
             var token = new JwtSecurityToken(
-                issuer: _Configuration["Jwt:Issuer"],
-                audience: _Configuration["Jwt:Audience"],
+                issuer: _Configuration["JwtConfig:Issuer"],
+                audience: _Configuration["JwtConfig:Audience"],
                 claims,
                 expires: DateTime.Now.AddMinutes(30),
                 signingCredentials: credentials

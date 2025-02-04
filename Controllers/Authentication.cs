@@ -12,10 +12,12 @@ namespace E_Commerce_API.Controllers
     public class Authentication : ControllerBase
     {
         private readonly ECommerceAPI_DbContext _dbContext;
+        private readonly JwtService _jwtService;
 
-        public Authentication(ECommerceAPI_DbContext dbContext)
+        public Authentication(ECommerceAPI_DbContext dbContext, JwtService jwtService)
         {
             _dbContext = dbContext;
+            _jwtService = jwtService;
         }
 
         [HttpPost("signup")]
@@ -26,13 +28,13 @@ namespace E_Commerce_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            HashingService.CreatePasswordHash(requestModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            var passwordHash = HashingService.CreatePasswordHash(requestModel.Password);
 
             var customer = new Customer
             {
                 UserName = requestModel.UserName,
                 UserEmail = requestModel.UserEmail,
-                PasswordHash = Convert.ToBase64String(passwordHash),
+                PasswordHash = passwordHash,
                 PhoneNumber = requestModel.PhoneNumber,
             };
 
@@ -43,10 +45,31 @@ namespace E_Commerce_API.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult Login(CustomerLoginDto requestModel)
+        public async Task<IActionResult> Login(CustomerLoginDto requestModel)
         {
-            Console.WriteLine(requestModel.UserEmail);
-            return Ok();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var customer = await _dbContext.Customers
+                .FirstOrDefaultAsync(c => c.UserEmail == requestModel.UserEmail);
+
+            if (customer == null)
+            {
+                return Unauthorized(new { Message = "Invalid email or password" });
+            }
+
+            bool isPasswordValid = HashingService.VerifyPasswordHash(requestModel.Password, customer.PasswordHash);
+
+            if (!isPasswordValid)
+            {
+                return Unauthorized(new { Message = "Invalid email or password" });
+            }
+
+            var token = _jwtService.GenerateSecurityToken(customer);
+
+            return Ok(new { Token = token });
         }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using E_Commerce_API.Models;
 
 namespace E_Commerce_API.Models
 {
-    public class ECommerceAPIContext : DbContext
+    public class ECommerceAPI_DbContext : DbContext
     {
-        public ECommerceAPIContext(DbContextOptions<ECommerceAPIContext> options) : base(options) { }
+        public ECommerceAPI_DbContext(DbContextOptions<ECommerceAPI_DbContext> options) : base(options) { }
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }

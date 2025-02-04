@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace E_Commerce_API.Migrations
 {
-    [DbContext(typeof(ECommerceAPIContext))]
-    partial class ECommerceAPIContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ECommerceAPI_DbContext))]
+    partial class ECommerceAPI_DbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

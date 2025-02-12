@@ -21,14 +21,15 @@ namespace E_Commerce_API.Services
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserEmail),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                    new Claim(JwtRegisteredClaimNames.Sub, user.UserEmail),
+                    new Claim(JwtRegisteredClaimNames.Email, user.UserEmail),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
             var token = new JwtSecurityToken(
                 issuer: _Configuration["JwtConfig:Issuer"],
                 audience: _Configuration["JwtConfig:Audience"],
                 claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddMinutes(double.Parse(_Configuration["JwtConfig:TokenValidityMins"]!)),
                 signingCredentials: credentials
             );
             return new JwtSecurityTokenHandler().WriteToken(token);
